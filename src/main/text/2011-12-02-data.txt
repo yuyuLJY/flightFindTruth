@@ -1,9 +1,5 @@
-flightexplorer	AA-1007-TPA-MIA		12/1/2011 2:07PM EST			12/1/2011 2:51PM EST	
-airtravelcenter	AA-1007-TPA-MIA		12/1/11 2:06 PM (-05:00)			12/1/11 2:51 PM (-05:00)	
-myrateplan	AA-1007-TPA-MIA		12/1/11 2:06 PM (-05:00)			12/1/11 2:51 PM (-05:00)	
-helloflight	AA-1007-TPA-MIA		12/1/11 2:06 PM (-05:00)			12/1/11 2:51 PM (-05:00)	
-flytecomm	AA-1007-TPA-MIA		12/1/11 2:06 PM (-05:00)			12/1/11 2:51 PM (-05:00)	
-flights	AA-1007-TPA-MIA		2011-12-01 02:07 PM	F78		2011-12-01 02:57 PM	D5
-businesstravellogue	AA-1007-TPA-MIA		2011-12-01 02:07 PM	F78		2011-12-01 02:57 PM	D5
-flylouisville	AA-1007-TPA-MIA		2011-12-01 02:07 PM	F78		2011-12-01 02:57 PM	D5
-flightview	AA-1007-TPA-MIA		2:07 PMDec 01			2:57 PMDec 01	
+travelocity	CO-4234-IAH-MEM	Dec 01 - 10:05am	Dec 01 - 9:55am	B84P	Dec 01 - 11:33am	Dec 01 - 11:24am	Not provided by airline
+gofox	CO-4234-IAH-MEM	10:05 AM, Dec 01	10:07 AM, Dec 01		11:33 AM, Dec 01	11:24 AM, Dec 01	
+foxbusiness	CO-4234-IAH-MEM	10:05 AM, Dec 01	10:07 AM, Dec 01	Term B - B84P	11:33 AM, Dec 01	11:24 AM, Dec 01	Term B - C14
+allegiantair	CO-4234-IAH-MEM	10:05 AM, Dec 01	10:07 AM, Dec 01	Term B - B84P	11:33 AM, Dec 01	11:24 AM, Dec 01	Term B - C14
+travelocity	UA-1457-SFO-IAH	Dec 01 - 6:00am	Dec 01 - Contact Airline	Not provided by airline	Dec 01 - 11:47am	Dec 01 - Contact Airline	Not provided by airline

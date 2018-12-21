@@ -1,4 +1,4 @@
-package com.baidu;
+package com.yuyu;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,9 +7,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 
-public class Voting {
+public class NewVoting {
 	static final int standardColumnsNumber = 8;
 	public static void main(String[] args) {
 		try {
@@ -23,7 +22,7 @@ public class Voting {
 			String[] strSplitSplit;
 			while((str = bf.readLine())!=null) {
 				saveSplitResult = str.split("\t");
-				System.out.printf("分割后的数组%s\n",Arrays.toString(saveSplitResult));
+				//System.out.printf("分割后的数组长度%d %s\n",saveSplitResult.length,Arrays.toString(saveSplitResult));
 				String[] standardEightColumn = new String [standardColumnsNumber]; 
 				//TODO 初始全为-1
 				for(int ii=0;ii<standardColumnsNumber;ii++) {
@@ -41,11 +40,11 @@ public class Voting {
 						i++;
 					}
 					//System.out.printf("j:%d i:%d %s\n",j,i,saveSplitResult[i]);
-					strSplitSplit = saveSplitResult[i].split(" ");//判断这个数据是不是日期
+					//strSplitSplit = saveSplitResult[i].split(" ");//判断这个数据是不是日期
 					//i =2
 					if((j==2 || j==3)) {
-						if(strSplitSplit.length>=2 || saveSplitResult[i].equals("") ) {//有空格
-							if(strSplitSplit.length>=2) {
+						if(saveSplitResult[i].contains(":") ||saveSplitResult[i].contains("Not")|| saveSplitResult[i].equals("")||saveSplitResult[i].contains("Contact Airline")) {//有空格
+							if(saveSplitResult[i].contains(":")) {//有冒号就是日期
 								standardEightColumn[j] = saveSplitResult[i];
 							}
 							i++;
@@ -54,16 +53,18 @@ public class Voting {
 							standardEightColumn[j] = saveSplitResult[i];
 						}
 					}
-					if(j==4 && strSplitSplit.length==1) {//""或者FD8
-						if(saveSplitResult[i].equals("")==false) {//只有真实的值才会覆盖"0"
+					//System.out.printf("%d %s\n",j,Arrays.toString(strSplitSplit));
+					if(j==4 &&(!saveSplitResult[i].contains(":"))) {//""或者FD8
+						if(saveSplitResult[i].equals("")==false && 
+								(!saveSplitResult[i].contains("Not provided by airline"))) {//只有真实的值才会覆盖"0"
 							standardEightColumn[j] = saveSplitResult[i];
 						}
 						i++;
 					}//分割结果是两位的：j下移，i不动
 					if(j==5 || j==6) {
 						//System.out.printf("当前列%s\n",Arrays.toString(strSplitSplit));
-						if(strSplitSplit.length>=2 || saveSplitResult[i].equals("") ) {//有空格
-							if(strSplitSplit.length>=2) {
+						if(saveSplitResult[i].contains(":") ||saveSplitResult[i].contains("Not")|| saveSplitResult[i].equals("")||saveSplitResult[i].contains("Contact Airline") ) {//有空格
+							if(saveSplitResult[i].contains(":")) {
 								standardEightColumn[j] = saveSplitResult[i];
 							}
 							i++;
@@ -73,7 +74,8 @@ public class Voting {
 						}
 					}
 					if(j==7) {
-						if(!saveSplitResult[i].equals("")) {
+						if(!saveSplitResult[i].equals("") && 
+								(!saveSplitResult[i].contains("Not provided by airline"))) {
 							standardEightColumn[j] = saveSplitResult[i];
 						}
 						i++;
@@ -87,7 +89,7 @@ public class Voting {
 			bf.close();
 			input.close();
 			for(int i=0;i<flightData.size();i++) {
-				System.out.printf("第7列情况：%s\n",flightData.get(i)[7]);
+				System.out.printf("第7列情况第%d行：%-25s %-10s\n",i,flightData.get(i)[4],flightData.get(i)[7]);
 			}
 		}catch(IOException e){
 			e.printStackTrace();
