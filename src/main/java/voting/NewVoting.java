@@ -1,4 +1,4 @@
-package com.yuyu;
+package voting;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -88,8 +88,10 @@ public class NewVoting {
 			}
 			bf.close();
 			input.close();
+			//处理出发日期，第2行
 			for(int i=0;i<flightData.size();i++) {
-				System.out.printf("第7列情况第%d行：%-25s %-10s\n",i,flightData.get(i)[4],flightData.get(i)[7]);
+				System.out.printf("第7列情况第%d行：%-25s %-25s\n",i,flightData.get(i)[2],flightData.get(i)[3]);
+				//按照" "分割开
 			}
 		}catch(IOException e){
 			e.printStackTrace();

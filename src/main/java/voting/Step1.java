@@ -1,4 +1,4 @@
-package com.yuyu;
+package voting;
 
 import java.io.IOException;
 import java.util.Map;
@@ -11,7 +11,9 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapred.RunningJob;
 public class Step1 {
 	static final int standardColumnsNumber = 8;
 	public static class step1StandardMapper extends Mapper<Object, Text, Text, Text>{
@@ -88,6 +90,7 @@ public class Step1 {
 				  }
 				  context.write(new Text(standardEightColumn[0]),new Text(s));
 				}
+			  System.out.println("finish");
 		  } 	
 	}
 	
