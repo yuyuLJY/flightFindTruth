@@ -1,44 +1,30 @@
 package judgeFromExitTruth;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Map;
 
-import javax.print.attribute.standard.JobState;
-
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.Reducer.Context;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import voting.Step1;
-import voting.TruthMain;
-import voting.Step1.step1StandardMapper;
-import voting.Step1.step1StandardReducer;
-
-public class JStep1 {
-	//public static void run(String name,Map<String, String> path) throws IOException {
-	static final int standardColumnsNumber = 8;
-	public static class step1StandardMapper extends Mapper<Object, Text, Text, Text>{
+public class JStep2 {
+	static final int standardColumnsNumber = 7;
+	public static class step2StandardMapper extends Mapper<Object, Text, Text, Text>{
 		public void map(Object key,Text value,Context context) throws IOException, InterruptedException{
 			String[] splitResult = value.toString().split("\t");
-			context.write(new Text(splitResult[1]), value);//<"Nanhang",整条信息>
+			context.write(new Text(splitResult[0]), value);//<"Nanhang",整条信息>
 		}
 	}
-	public static class step1StandardReducer extends Reducer<Text,Text,Text,Text> {
+	public static class step2StandardReducer extends Reducer<Text,Text,Text,Text> {
 		  public void reduce(Text key, Iterable<Text> values, Context context)throws IOException, InterruptedException {
 			  for(Text value : values) {//对每个航班的信息标准化
 				  String[] saveSplitResult = value.toString().split("\t");
-				  //System.out.printf("%s\n",Arrays.toString(saveSplitResult));
+				  System.out.printf("输入的矩阵：%s\n",Arrays.toString(saveSplitResult));
 				  String[] standardEightColumn = new String [standardColumnsNumber]; 
 					//TODO 初始全为-1
 				  for(int ii=0;ii<standardColumnsNumber;ii++) {
@@ -50,32 +36,20 @@ public class JStep1 {
 						if(i>=saveSplitResult.length) {
 							break;
 						}
-						if(j<=1) {
+						if(j<=2) {
 							standardEightColumn[j] = saveSplitResult[i];
 							i++;
 						}
-						//System.out.printf("j:%d i:%d %s\n",j,i,saveSplitResult[i]);
-						//strSplitSplit = saveSplitResult[i].split(" ");//判断这个数据是不是日期
-						//i =2
-						if((j==2 || j==3)) {
-							if(saveSplitResult[i].contains(":") ||saveSplitResult[i].contains("Not")|| saveSplitResult[i].equals("")||saveSplitResult[i].contains("Contact Airline")) {//有空格
-								if(saveSplitResult[i].contains(":")) {//有冒号就是日期
-									standardEightColumn[j] = saveSplitResult[i];
-								}
+						if(j==3) {
+							if(saveSplitResult[i].contains("--") || saveSplitResult[i].contains(":")) {
+								standardEightColumn[j] = "0";
+							}else {
+								standardEightColumn[j] = saveSplitResult[i];//只有正确的才能移动
 								i++;
-							}else {//长度为1
-								j=4;//下一轮从5开始
-								standardEightColumn[j] = saveSplitResult[i];
 							}
 						}
-						if(j==4 &&(!saveSplitResult[i].contains(":"))) {//""或者FD8
-							if(saveSplitResult[i].equals("")==false && 
-									(!saveSplitResult[i].contains("Not provided by airline"))) {//只有真实的值才会覆盖"0"
-								standardEightColumn[j] = saveSplitResult[i];
-							}
-							i++;
-						}//分割结果是两位的：j下移，i不动
-						if(j==5 || j==6) {
+
+						if(j==4 || j==5) {
 							//System.out.printf("当前列%s\n",Arrays.toString(strSplitSplit));
 							if(saveSplitResult[i].contains(":") ||saveSplitResult[i].contains("Not")|| saveSplitResult[i].equals("")||saveSplitResult[i].contains("Contact Airline") ) {//有空格
 								if(saveSplitResult[i].contains(":")) {
@@ -83,31 +57,32 @@ public class JStep1 {
 								}
 								i++;
 							}else {//长度为1
-								j=7;
 								standardEightColumn[j] = saveSplitResult[i];
 							}
 						}
-						if(j==7) {
-							if(!saveSplitResult[i].equals("") && 
-									(!saveSplitResult[i].contains("Not provided by airline"))) {
+						if(j==6) {
+							if(saveSplitResult.length<standardColumnsNumber || saveSplitResult[i].contains("--") || saveSplitResult[i].contains(":")) {
+								standardEightColumn[j] = "0";
+							}else{
 								standardEightColumn[j] = saveSplitResult[i];
 							}
-							i++;
 						}
 				  }
 				  //把标准数组组成String
+				  System.out.printf("标准的矩阵：%s\n",Arrays.toString(standardEightColumn));
 				  String s =standardEightColumn[0];
 				  for(int k = 1; k <standardColumnsNumber;k++) {
 					  s =s+"/t"+standardEightColumn[k];
 				  }
+				  System.out.printf("标准的句子：%s\n",s);
 				  context.write(new Text(standardEightColumn[0]),new Text(s));
 				}
-			  //System.out.println("finish");
+			  System.out.println("finish");
 		  } 	
 	}
 	
 	public static void run(String inputName,String outputName,Map<String, String> path) throws IOException, ClassNotFoundException, InterruptedException{
-		Job job = new Job(JTruthMain.config(),"step1");
+		Job job = new Job(JTruthMain.config(),"step2");
         String input = path.get(inputName);
         String output = path.get(outputName);
         
@@ -117,13 +92,12 @@ public class JStep1 {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
         
-        job.setJarByClass(JStep1.class);
-        job.setMapperClass(step1StandardMapper.class);
-        job.setReducerClass(step1StandardReducer.class);
+        job.setJarByClass(JStep2.class);
+        job.setMapperClass(step2StandardMapper.class);
+        job.setReducerClass(step2StandardReducer.class);
         
         FileInputFormat.addInputPath(job, new Path(input));
 		FileOutputFormat.setOutputPath(job,new Path(output) );
 		job.waitForCompletion(true);
-		//System.exit(job.waitForCompletion(true) ? 0 : 1);//若执行完毕，退出
 	}
 }
