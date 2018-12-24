@@ -41,7 +41,7 @@ public class Step7 {
 				 if(tt.getCorrecInfo().containsKey(key.toString())) {//答案里边有
 				 String[] flightInfo = tt.getCorrecInfo().get(key.toString());//找到南航AT900的正确信息
 				 //------------------验证flightInfo-----------------------------
-				 System.out.printf("正确情况： %s\n",Arrays.toString(flightInfo));
+				 //System.out.printf("正确情况： %s\n",Arrays.toString(flightInfo));
 				 Map<String,Float> correctRate = tt.getCorrectRate();
 				 for(Text value : values) {//
 					 int predictFlag = 1 ;//预测的情况
@@ -49,7 +49,7 @@ public class Step7 {
 					 
 					//-------------------实际的情况---------------
 					 String[] saveSplitResult = value.toString().split("/t");//分割
-					 System.out.printf("信息源 %s\n",Arrays.toString(saveSplitResult));
+					 //System.out.printf("信息源 %s\n",Arrays.toString(saveSplitResult));
 					 if(!saveSplitResult[4].equals("0") && !flightInfo[3].equals("0")&& !saveSplitResult[4].equals(flightInfo[3])) {//判断登机口
 						 actualFlag = 0;
 					 }
@@ -82,7 +82,7 @@ public class Step7 {
 					 if(correctRate.get(saveSplitResult[0])<0.5) {//如果正确率小于0.5，被置为错误，即0
 						 predictFlag= 0;
 					 }
-					 System.out.printf("判断信息 %d %d\n",predictFlag,actualFlag);
+					 //System.out.printf("判断信息 %d %d\n",predictFlag,actualFlag);
 					 context.write(new IntWritable(predictFlag),new IntWritable(actualFlag));
 				 }
 			}
@@ -91,7 +91,7 @@ public class Step7 {
 	
 	//从日期形式，计算出出发时间
 	public static int CountTime(String s){
-		  System.out.printf("输入字符串：%s\n",s);
+		  //System.out.printf("输入字符串：%s\n",s);
 		  String actualTime = "0";
 		  String[] split = s.split(" ");//把出发时间分片
 		  for(String t : split) {//找到包含":"的时间,但是不要括号里面的
@@ -104,7 +104,7 @@ public class Step7 {
 				  actualTime = actualTime.replaceAll("\\*", "");
 			  }
 		  }
-		  System.out.printf("找到的到达时间  %s\n",actualTime);
+		  //System.out.printf("找到的到达时间  %s\n",actualTime);
 		  int CountTime =0;
 		  if(actualTime.contains(":")) {
 			  String[] splitCountTime = actualTime.split(":");
@@ -121,8 +121,7 @@ public class Step7 {
 		conf.set("fs.defaultFS", "hdfs://192.168.126.130:9000");
 		FileSystem fs = FileSystem.get(conf);
 		
-		
-		//TODO 读出信息源的数量，执行十遍，！！！覆盖问题
+		//TODO 读出信息源的标准情况，执行十遍，！！！覆盖问题
 		Path pathSourceNumber = new Path("hdfs://192.168.126.130:9000/user/findTruth/data/standard_truth_flight/part-r-00000");
 		if (fs.exists(pathSourceNumber)) {
 			System.out.println("Exists!");
@@ -137,7 +136,7 @@ public class Step7 {
                 while((line=reader.readLine())!=null){
                 	String[] split = line.split("\t");
                 	String[] splitValue = split[1].split("/t"); 
-                	tt.setCorrectInfo(split[0],splitValue);//写信息源的数量
+                	tt.setCorrectInfo(split[0],splitValue);//写信息源的情况
                     //System.out.println("line="+line);
                     
                 }
@@ -149,7 +148,7 @@ public class Step7 {
 			System.out.println("不存在");
 		}
 		//---------------------读取正确率---------------------------
-		Path pathCorrectRate = new Path("hdfs://192.168.126.130:9000/user/findTruth/step5/correctRate.txt");
+		Path pathCorrectRate = new Path("hdfs://192.168.126.130:9000/user/findTruth/Voting/step5");
 		if (fs.exists(pathCorrectRate)) {
 			System.out.println("Exists!");
 			try {
@@ -186,7 +185,6 @@ public class Step7 {
 			System.out.printf("%s %f\n",s,correctrate.get(s));
 		}
 		
-		
 		Job job = new Job(TruthMain.config(),"step7");
         String input = path.get("Step7Input");
         String output = path.get("Step7Output");
@@ -204,5 +202,6 @@ public class Step7 {
         FileInputFormat.addInputPath(job, new Path(input));
 		FileOutputFormat.setOutputPath(job,new Path(output) );
 		System.exit(job.waitForCompletion(true) ? 0 : 1);//若执行完毕，退出
+		
 	}
 }

@@ -20,7 +20,7 @@ public class Step5 {
 		FileSystem fs = FileSystem.get(conf);
 		
 		//TODO 读出信息源的数量，执行十遍，！！！覆盖问题
-		Path pathSourceNumber = new Path("hdfs://192.168.126.130:9000/user/findTruth/step4/part-r-00000");
+		Path pathSourceNumber = new Path("hdfs://192.168.126.130:9000/user/findTruth/Voting/step4/part-r-00000");
 		if (fs.exists(pathSourceNumber)) {
 			System.out.println("Exists!");
 			try {
@@ -46,7 +46,7 @@ public class Step5 {
 		}
 		
 		//TODO 读出信息源正确的数量，执行十遍，！！！考虑覆盖问题
-		Path pathCorrect = new Path("hdfs://192.168.126.130:9000/user/findTruth/step3/part-r-00000");
+		Path pathCorrect = new Path("hdfs://192.168.126.130:9000/user/findTruth/Voting/step3/part-r-00000");
 		if (fs.exists(pathCorrect)) {
 			System.out.println("Exists!");
 			try {

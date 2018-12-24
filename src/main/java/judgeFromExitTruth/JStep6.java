@@ -23,7 +23,7 @@ public class JStep6 {
 		FileSystem fs = FileSystem.get(conf);
 		
 		//读出信息源的数量
-		Path pathSourceNumber = new Path("hdfs://192.168.126.130:9000/user/findTruth/JudgeMethod/step3/part-r-00000");
+		Path pathSourceNumber = new Path("hdfs://192.168.126.130:9000/user/findTruth/JudgeMethod1/step3/part-r-00000");
 		if (fs.exists(pathSourceNumber)) {
 			System.out.println("Exists!");
 			try {
@@ -49,7 +49,7 @@ public class JStep6 {
 		}
 		
 		//读出信息源正确的数量
-		Path pathCorrect = new Path("hdfs://192.168.126.130:9000/user/findTruth/JudgeMethod/step5/part-r-00000");
+		Path pathCorrect = new Path("hdfs://192.168.126.130:9000/user/findTruth/JudgeMethod1/step5/part-r-00000");
 		if (fs.exists(pathCorrect)) {
 			System.out.println("Exists!");
 			try {

@@ -27,7 +27,7 @@ public class JTruthMain {
 			if(i!=6  && i!=21 && i !=23) {
 			pathFlight.put("Step"+String.valueOf(i)+"Input", 
 					HDFS+"/user/findTruth/data/clean_flight/2011-12-"+f2.format(i)+"-data.txt");
-			pathFlight.put("Step"+String.valueOf(i)+"Output", HDFS+"/user/findTruth/JudgeMethod/step1/"+String.valueOf(i));
+			pathFlight.put("Step"+String.valueOf(i)+"Output", HDFS+"/user/findTruth/JudgeMethod1/step1/"+String.valueOf(i));
 			}
 		}
 		//验证训练集的名称
@@ -47,7 +47,7 @@ public class JTruthMain {
 			if(i!=6  && i!=21 && i !=23) {
 				pathTruth.put("Step"+String.valueOf(i)+"Input", 
 					HDFS+"/user/findTruth/data/flight_truth/2011-12-"+f2.format(i)+"-truth.txt");
-				pathTruth.put("Step"+String.valueOf(i)+"Output", HDFS+"/user/findTruth/JudgeMethod/step2/"+String.valueOf(i));
+				pathTruth.put("Step"+String.valueOf(i)+"Output", HDFS+"/user/findTruth/JudgeMethod1/step2/"+String.valueOf(i));
 			}
 		}
 		//验证训练集的名称
@@ -64,8 +64,8 @@ public class JTruthMain {
 		
 		//-------------------------step3:计算每个信息源的数量--------------------------------
 		
-		path.put("Step3Input", HDFS+"/user/findTruth/JudgeMethod/step1");
-		path.put("Step3Output",HDFS+"/user/findTruth/JudgeMethod/step3" );
+		path.put("Step3Input", HDFS+"/user/findTruth/JudgeMethod1/step1");
+		path.put("Step3Output",HDFS+"/user/findTruth/JudgeMethod1/step3" );
 		JStep3.run(path);
 		
 		//-------------------------step4:计算正确的信息个数--------------------------------
@@ -75,7 +75,7 @@ public class JTruthMain {
 			if(i!=6  && i!=21 && i !=23) {
 				step4Path.put("Step"+String.valueOf(i)+"Input", 
 					HDFS+"/user/findTruth/JudgeMethod/step1/"+String.valueOf(i));
-				step4Path.put("Step"+String.valueOf(i)+"Output", HDFS+"/user/findTruth/JudgeMethod/step4/"+String.valueOf(i));
+				step4Path.put("Step"+String.valueOf(i)+"Output", HDFS+"/user/findTruth/JudgeMethod1/step4/"+String.valueOf(i));
 			}
 		}
 		for(int i=1 ;i<=26;i++) {
@@ -88,8 +88,8 @@ public class JTruthMain {
 		//JStep4.run("Step1Input","Step1Output",pathTruth,step4Path);
 		
 		//------------------------step5:总汇正确数据源的数量--------------------------------
-		path.put("Step5Input", HDFS+"/user/findTruth/JudgeMethod/step4");
-		path.put("Step5Output",HDFS+"/user/findTruth/JudgeMethod/step5" );
+		path.put("Step5Input", HDFS+"/user/findTruth/JudgeMethod1/step4");
+		path.put("Step5Output",HDFS+"/user/findTruth/JudgeMethod1/step5" );
 		JStep5.run(path);
 		
 		//-----------------------step6:计算正确率-------------------------------------------
@@ -97,12 +97,12 @@ public class JTruthMain {
 		
 		//-----------------------step7:写入<判断的情况，实际的情况>-------------------------------------------
 		path.put("Step7Input", HDFS+"/user/findTruth/data/standard_test_flight");
-		path.put("Step7Output", HDFS+"/user/findTruth/JudgeMethod/step7");
+		path.put("Step7Output", HDFS+"/user/findTruth/JudgeMethod1/step7");
 		JStep7.run(path);
 		
 		//-----------------------step8:统计测验集正确和错误的情况-------------------------------------------
 		path.put("Step8Input", path.get("Step7Output"));
-		path.put("Step8Output", HDFS+"/user/findTruth/JudgeMethod/step8");
+		path.put("Step8Output", HDFS+"/user/findTruth/JudgeMethod1/step8");
 		JStep8.run(path);
 		
 		//----------------------step9:输出正确率-----------------------------------------------------------

@@ -198,7 +198,7 @@ public class JStep7 {
         
         FileInputFormat.addInputPath(job, new Path(input));
 		FileOutputFormat.setOutputPath(job,new Path(output) );
-		System.exit(job.waitForCompletion(true) ? 0 : 1);//若执行完毕，退出
+		job.waitForCompletion(true);//若执行完毕，退出
 		
 	}
 }

@@ -19,7 +19,7 @@ public class JStep9 {
 		
 		
 		//TODO 读出信息源的数量，执行十遍，！！！覆盖问题
-		Path pathSourceNumber = new Path("hdfs://192.168.126.130:9000/user/findTruth/JudgeMethod/step8/part-r-00000");
+		Path pathSourceNumber = new Path("hdfs://192.168.126.130:9000/user/findTruth/JudgeMethod1/step8/part-r-00000");
 		if (fs.exists(pathSourceNumber)) {
 			System.out.println("Exists!");
 			try {

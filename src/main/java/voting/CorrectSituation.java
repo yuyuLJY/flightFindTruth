@@ -30,7 +30,7 @@ public class CorrectSituation {
 		if(!correctRate.containsKey(s)) {
 			correctRate.put(s,number);
 		}else {
-			correctRate.put(s,correctRate.get(s)+number);
+			System.out.printf("CorrectRate÷ÿ∏¥ %s\n",s);;
 		}
     }
     public void setCorrectInfo(String s,String[] info) {
@@ -38,7 +38,8 @@ public class CorrectSituation {
 		if(!correcInfo.containsKey(s)) {
 			correcInfo.put(s,info);
 		}else {
-			System.out.println("correctInfo÷ÿ∏¥");
+			correcInfo.put(s,info);
+			System.out.printf("correctInfo÷ÿ∏¥ %s\n",s);
 		}
     }
     
