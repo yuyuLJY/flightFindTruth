@@ -21,7 +21,7 @@ public class Step2 {
 			String[] splitResult = value.toString().split("\t");//tap符号
 			String[] splitInformation = splitResult[1].split("/t");
 			//System.out.printf("map %s\n",Arrays.toString(splitResult));
-			//System.out.printf("map %s\n",Arrays.toString(splitInformation));
+			System.out.printf("map %s\n",Arrays.toString(splitInformation));
 			context.write(new Text(splitInformation[1]), new Text(splitResult[1]));//<"Nanhang",整条信息>
 		}
 	}

@@ -21,21 +21,22 @@ public class TruthMain {
 		path.put("Step3Output",HDFS+"/user/findTruth/step3" );
 		path.put("Step4Input", HDFS+"/user/findTruth/data/clean_flight/2011-12-01-data.txt");
 		path.put("Step4Output",HDFS+"/user/findTruth/step4");
-		path.put("Step6Input", HDFS+"/user/findTruth/data/clean_flight/2011-12-27-data.txt");
-		path.put("Step6Input", HDFS+"/user/findTruth/step6/1");
-		
-		Format f2 = new DecimalFormat("00");
-		//System.out.println("---");
-		//for(int i=1;i<26;i++) {
-			//path.put("Step1Input", HDFS+"/user/findTruth/data/clean_flight/2011-12-"+f2.format(i)+"-data.txt");
-			//Step1.run(path);//产生标准数据集
-		//}
+		path.put("Step6Input", HDFS+"/user/findTruth/data/flight_truth/2011-12-27-truth.txt");
+		path.put("Step6Output", HDFS+"/user/findTruth/data/standard_truth_flight");
+		path.put("Step7Input", HDFS+"/user/findTruth/data/standard_test_flight");
+		path.put("Step7Output", HDFS+"/user/findTruth/step7");		
+		path.put("Step8Input", HDFS+"/user/findTruth/step7");
+		path.put("Step8Output", HDFS+"/user/findTruth/step8");
+		//Format f2 = new DecimalFormat("00");
 		//Step1.run(path);//产生标准数据集
 		//Step2.run(path);//判断信息源的四条信息，是否正确(使用投票的方法)
 		//Step3.run(path);//计算信息源正确的总数
 		//Step4.run(path);//计算每个信息源的数量
 		//Step5.run(path);//step5计算信息源的准确率
-		//Step6.run();//从测试文本判断准确率的情况和真实情况
+		//Step6.run(path);//标准化真实数据集filght_truth
+		//Step7.run(path);//从测试文本判断准确率的情况和真实情况
+		//Step8.run(path);//统计正确的情况
+		Step9.run(path);
 		System.exit(0);
 	}
 	
