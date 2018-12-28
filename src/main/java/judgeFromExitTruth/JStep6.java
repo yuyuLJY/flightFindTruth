@@ -108,7 +108,7 @@ public class JStep6 {
 		Map<String,Float> correctRateMap  = tt.getCorrectRate();
 		System.out.println("验证准确率");
 		for(String s : correctRateMap.keySet()) {
-			System.out.printf("%s	%f\n",s,correctRateMap.get(s));
+			//System.out.printf("%s	%f\n",s,correctRateMap.get(s));
 		}
 		
 		//-----------------将准确率写入hdfs文件------------
