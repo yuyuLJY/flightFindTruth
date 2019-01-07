@@ -25,10 +25,10 @@ public class JStep2 {
 			  for(Text value : values) {//对每个航班的信息标准化
 				  String[] saveSplitResult = value.toString().split("\t");
 				  System.out.printf("输入的矩阵：%s\n",Arrays.toString(saveSplitResult));
-				  String[] standardEightColumn = new String [standardColumnsNumber]; 
+				  String[] standardSevenColumn = new String [standardColumnsNumber]; 
 					//TODO 初始全为-1
 				  for(int ii=0;ii<standardColumnsNumber;ii++) {
-						standardEightColumn[ii]="0";
+					  standardSevenColumn[ii]="0";
 				  }
 				  int i = 0;
 				  for(int j=0; j<standardColumnsNumber; j++) {//使用分割得到的行去填充标准的数组
@@ -37,14 +37,14 @@ public class JStep2 {
 							break;
 						}
 						if(j<=2) {
-							standardEightColumn[j] = saveSplitResult[i];
+							standardSevenColumn[j] = saveSplitResult[i];
 							i++;
 						}
 						if(j==3) {
 							if(saveSplitResult[i].contains("--") || saveSplitResult[i].contains(":")) {
-								standardEightColumn[j] = "0";
+								standardSevenColumn[j] = "0";
 							}else {
-								standardEightColumn[j] = saveSplitResult[i];//只有正确的才能移动
+								standardSevenColumn[j] = saveSplitResult[i];//只有正确的才能移动
 								i++;
 							}
 						}
@@ -53,29 +53,29 @@ public class JStep2 {
 							//System.out.printf("当前列%s\n",Arrays.toString(strSplitSplit));
 							if(saveSplitResult[i].contains(":") ||saveSplitResult[i].contains("Not")|| saveSplitResult[i].equals("")||saveSplitResult[i].contains("Contact Airline") ) {//有空格
 								if(saveSplitResult[i].contains(":")) {
-									standardEightColumn[j] = saveSplitResult[i];
+									standardSevenColumn[j] = saveSplitResult[i];
 								}
 								i++;
 							}else {//长度为1
-								standardEightColumn[j] = saveSplitResult[i];
+								standardSevenColumn[j] = saveSplitResult[i];
 							}
 						}
 						if(j==6) {
 							if(saveSplitResult.length<standardColumnsNumber || saveSplitResult[i].contains("--") || saveSplitResult[i].contains(":")) {
-								standardEightColumn[j] = "0";
+								standardSevenColumn[j] = "0";
 							}else{
-								standardEightColumn[j] = saveSplitResult[i];
+								standardSevenColumn[j] = saveSplitResult[i];
 							}
 						}
 				  }
 				  //把标准数组组成String
-				  System.out.printf("标准的矩阵：%s\n",Arrays.toString(standardEightColumn));
-				  String s =standardEightColumn[0];
+				  System.out.printf("标准的矩阵：%s\n",Arrays.toString(standardSevenColumn));
+				  String s =standardSevenColumn[0];
 				  for(int k = 1; k <standardColumnsNumber;k++) {
-					  s =s+"/t"+standardEightColumn[k];
+					  s =s+"/t"+standardSevenColumn[k];
 				  }
 				  System.out.printf("标准的句子：%s\n",s);
-				  context.write(new Text(standardEightColumn[0]),new Text(s));
+				  context.write(new Text(standardSevenColumn[0]),new Text(s));
 				}
 			  System.out.println("finish");
 		  } 	

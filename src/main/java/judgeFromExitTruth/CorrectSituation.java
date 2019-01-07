@@ -33,6 +33,8 @@ public class CorrectSituation {
 			System.out.printf("CorrectRate重复 %s\n",s);;
 		}
     }
+    
+    //<航班信息,正确的信息>
     public void setCorrectInfo(String s,String[] info) {
     	//System.out.printf("main %s %d\n",s,number);
 		if(!correcInfo.containsKey(s)) {
