@@ -86,6 +86,7 @@ public class FStep3 {
 					Distance2 +=  Math.pow(CountTime(s[3])-AveTime2,2);
 					Distance3 +=  Math.pow(CountTime(s[5])-AveTime3,2);
 					Distance4 +=  Math.pow(CountTime(s[6])-AveTime4,2);
+					System.out.println("Distance1:"+Distance1+"Distance2:"+Distance2+"Distance3:"+Distance3+"Distance4:"+Distance4);
 				}
 				//计算分母开根号以后的值
 				absDistance1 = Math.sqrt(Distance1);
@@ -94,19 +95,23 @@ public class FStep3 {
 				absDistance4 = Math.sqrt(Distance4);
 				double countLoss = 0;
 				for(String[] s:collectInfo) {
-					countLoss1 = (Math.abs(CountTime(s[2])-CountTime(flightInfo[1])))/(absDistance1);
-					countLoss2 = (Math.abs(CountTime(s[3])-CountTime(flightInfo[2])))/(absDistance2);
-					countLoss3 = (Math.abs(CountTime(s[5])-CountTime(flightInfo[4])))/(absDistance3);
-					countLoss4 = (Math.abs(CountTime(s[6])-CountTime(flightInfo[5])))/(absDistance4);
+					if(absDistance1!=0.0)
+						countLoss1 = (Math.abs(CountTime(s[2])-CountTime(flightInfo[1])))/(absDistance1);
+					if(absDistance2!=0.0)
+						countLoss2 = (Math.abs(CountTime(s[3])-CountTime(flightInfo[2])))/(absDistance2);
+					if(absDistance3!=0.0)
+						countLoss3 = (Math.abs(CountTime(s[5])-CountTime(flightInfo[4])))/(absDistance3);
+					if(absDistance4!=0.0)
+						countLoss4 = (Math.abs(CountTime(s[6])-CountTime(flightInfo[5])))/(absDistance4);
 					countLoss = (countLoss1+countLoss2+countLoss3+countLoss4)/4.0;//某个信息源四列的损失
 					System.out.println("name:"+s[0]+" loss1: "+countLoss1+"  loss2: "+countLoss2+" loss3: "+countLoss3
-							+"  loss4: "+countLoss4);
+								+"  loss4: "+countLoss4);
 					tt.setDcon(s[0], countLoss);
 				}
 				//TODO 检查Dcon
 				System.out.println("检查Dcon");
 				for(String s : tt.getDcon().keySet()) {
-					System.out.println(s+" "+tt.getDcon().get(s));
+					//System.out.println(s+" "+tt.getDcon().get(s));
 				}
 				//TODO 插入xRate,yRate
 				Map<String,Double> RealityI = tt.getRealityI();//存储本次i正确率
@@ -124,21 +129,25 @@ public class FStep3 {
 					}
 					xRate += RealityI.get(s) * Dcate.get(s);
 					yRate += RealityJ.get(s) * Dcon.get(s);
+					
 				}
 				tt.setXRate(xRate);
 				tt.setYRate(yRate);
 				//TODO 验证xRate,yRate的正确性
 				for(int l=0;l<tt.getXRate().size();l++) {
+					//if(Double.isNaN(tt.getYRate().get(l))) {
 					System.out.println("xRate:"+tt.getXRate().get(l)+"  "+"yRate:"+tt.getYRate().get(l));
 				}
-				/*
 				//调用梯度下降，计算合理的alpha beta
 				double[] theta = new double[2];
 				theta = batchGradientDescent();//调用梯度下降
 				double beta = 1/(theta[0]+1);
 				double alpha = theta[0]/(theta[0]+1);
+				System.out.println("原始  alpha: "+alpha+" beta: "+beta);
 				//TODO beta和alpha还需要折合
-				
+				beta = 1.0/(1+ Math.pow(Math.E,-beta));
+				alpha = 1.0/(1+ Math.pow(Math.E,-alpha));
+				System.out.println("sigmoid  alpha: "+alpha+" beta: "+beta);
 				double countRealityI;
 				double countRealityJ;
 				for( String s :tt.getRealityI().keySet()) {
@@ -149,7 +158,6 @@ public class FStep3 {
 					countRealityJ = sigmoid(beta,s);
 					tt.setRealityJ(s, countRealityJ);
 				}
-				*/
 				tt.clearDcate();
 				tt.clearDcon();
 			}
@@ -216,7 +224,7 @@ public class FStep3 {
 				loss.add(countPerLoss);
 			}
 			//计算cost
-			for(Double a :cost) {
+			for(Double a :loss) {
 				costWhole += a;
 			}
 			System.out.println("cost:"+costWhole);
@@ -244,10 +252,10 @@ public class FStep3 {
 		FCorrectSituation tt = new FCorrectSituation();
 		
 		Configuration conf=FeedbackMain.config();
-		conf.set("fs.defaultFS", "hdfs://192.168.126.130:9000");
+		conf.set("fs.defaultFS", "hdfs://192.168.126.131:9000");
 		FileSystem fs = FileSystem.get(conf);
 		
-		Path pathSourceNumber = new Path("hdfs://192.168.126.130:9000/user/findTruth/feedback/truth1201/1/part-r-00000");
+		Path pathSourceNumber = new Path("hdfs://192.168.126.131:9000/user/findTruth/feedback/truth1201/part-r-00000");
 		tt.getCorrecInfo().clear();//!!!!!统计每个月的时候，要清除
 		if (fs.exists(pathSourceNumber)) {
 			System.out.println("Exists!");

@@ -10,17 +10,17 @@ import org.apache.hadoop.mapred.JobConf;
 import voting.TruthMain;
 
 public class FeedbackMain {
-	public static final String HDFS = "hdfs://192.168.126.130:9000";
+	public static final String HDFS = "hdfs://192.168.126.131:9000";
 	public static void main(String[] args) throws Exception {
 		
 		Map<String,String> path = new HashMap<String,String>();
 		//----------------------step1:产生标准的训练数据集-------------------
 		path.put("Step1Input", HDFS+"/user/findTruth/data/clean_flight/2011-12-01-data.txt");
-		path.put("Step1Output", HDFS+"/user/findTruth/feedback/data1201/3");
+		path.put("Step1Output", HDFS+"/user/findTruth/feedback/data1201");
 		path.put("Step2Input", HDFS+"/user/findTruth/data/flight_truth/2011-12-01-truth.txt");
-		path.put("Step2Output", HDFS+"/user/findTruth/feedback/truth1201/1");//输出标准的答案集
-		path.put("Step3Input", HDFS+"/user/findTruth/feedback/data1201/3");//输入标准的数据集
-		path.put("Step3Output", HDFS+"/user/findTruth/feedback/step3/9");
+		path.put("Step2Output", HDFS+"/user/findTruth/feedback/truth1201");//输出标准的答案集
+		path.put("Step3Input", HDFS+"/user/findTruth/feedback/data1201");//输入标准的数据集
+		path.put("Step3Output", HDFS+"/user/findTruth/feedback/step3/7");
 		//TODO 先把正确率先写进去
 		FCorrectSituation tt = new FCorrectSituation();
 		String[] sourceName = 
