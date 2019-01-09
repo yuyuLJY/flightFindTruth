@@ -40,8 +40,9 @@ public class FStep3 {
 		  public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 			FCorrectSituation tt = new FCorrectSituation();
 			if(tt.getCorrecInfo().containsKey(key.toString())) {//答案里边有
+				 System.out.println("验证Dcon的大小："+tt.getDcon().size());
 				 String[] flightInfo = tt.getCorrecInfo().get(key.toString());//找到南航AT900的正确信息
-				 ArrayList<String []> collectInfo = new ArrayList<String[]>(); 
+				 ArrayList<String []> collectInfo = new ArrayList<String[]>(); //把38个信息源给出的航班信息收集起来
 				 //------------------验证flightInfo-----------------------------
 				 System.out.printf("正确情况： %s\n",Arrays.toString(flightInfo));
 				 for(Text value : values) {
@@ -61,12 +62,12 @@ public class FStep3 {
 					 tt.setDcate(saveSplitResult[0], IsArriveGateCorrect+IsDepartureGateCorrect);
 				 }
 				//--------------------收集信息完整后-----------------
-				float sumTime1=0,sumTime2 = 0,sumTime3=0,sumTime4 = 0;
-				float AveTime1=0,AveTime2 = 0,AveTime3=0,AveTime4 = 0;
-				float Distance1=0,Distance2 = 0,Distance3=0,Distance4 = 0;
-				float absDistance1=0,absDistance2 = 0,absDistance3=0,absDistance4 = 0;//绝对值距离
-				float countLoss1=0,countLoss2 = 0,countLoss3=0,countLoss4 = 0;
-				float number = collectInfo.size();
+				double sumTime1=0,sumTime2 = 0,sumTime3=0,sumTime4 = 0;//所有信息源的列时间和
+				double AveTime1=0,AveTime2 = 0,AveTime3=0,AveTime4 = 0;//所有信息源所有信息源的列时间平均值
+				double Distance1=0,Distance2 = 0,Distance3=0,Distance4 = 0;//列信息的平方差
+				double absDistance1=0,absDistance2 = 0,absDistance3=0,absDistance4 = 0;//绝对值距离
+				double countLoss1=0,countLoss2 = 0,countLoss3=0,countLoss4 = 0;//
+				double number = collectInfo.size();//一共有多少个信息源参与计算
 				//计算每列的总和
 				for(String[] s:collectInfo) {
 					sumTime1 += CountTime(s[2]);
@@ -87,18 +88,25 @@ public class FStep3 {
 					Distance4 +=  Math.pow(CountTime(s[6])-AveTime4,2);
 				}
 				//计算分母开根号以后的值
-				absDistance1 = (float) Math.sqrt(Distance1);
-				absDistance2 = (float) Math.sqrt(Distance2);
-				absDistance3 = (float) Math.sqrt(Distance3);
-				absDistance4 = (float) Math.sqrt(Distance4);
+				absDistance1 = Math.sqrt(Distance1);
+				absDistance2 = Math.sqrt(Distance2);
+				absDistance3 = Math.sqrt(Distance3);
+				absDistance4 = Math.sqrt(Distance4);
 				double countLoss = 0;
 				for(String[] s:collectInfo) {
 					countLoss1 = (Math.abs(CountTime(s[2])-CountTime(flightInfo[1])))/(absDistance1);
-					countLoss2 = (Math.abs(CountTime(s[3])-CountTime(flightInfo[2])))/(absDistance1);
-					countLoss3 = (Math.abs(CountTime(s[5])-CountTime(flightInfo[4])))/(absDistance1);
-					countLoss4 = (Math.abs(CountTime(s[6])-CountTime(flightInfo[5])))/(absDistance1);
-					countLoss = countLoss1+countLoss2+countLoss3+countLoss4;//某个信息源四列的损失
+					countLoss2 = (Math.abs(CountTime(s[3])-CountTime(flightInfo[2])))/(absDistance2);
+					countLoss3 = (Math.abs(CountTime(s[5])-CountTime(flightInfo[4])))/(absDistance3);
+					countLoss4 = (Math.abs(CountTime(s[6])-CountTime(flightInfo[5])))/(absDistance4);
+					countLoss = (countLoss1+countLoss2+countLoss3+countLoss4)/4.0;//某个信息源四列的损失
+					System.out.println("name:"+s[0]+" loss1: "+countLoss1+"  loss2: "+countLoss2+" loss3: "+countLoss3
+							+"  loss4: "+countLoss4);
 					tt.setDcon(s[0], countLoss);
+				}
+				//TODO 检查Dcon
+				System.out.println("检查Dcon");
+				for(String s : tt.getDcon().keySet()) {
+					System.out.println(s+" "+tt.getDcon().get(s));
 				}
 				//TODO 插入xRate,yRate
 				Map<String,Double> RealityI = tt.getRealityI();//存储本次i正确率
@@ -108,11 +116,22 @@ public class FStep3 {
 				double xRate =0;
 				double yRate =0;
 				for(String s :RealityI.keySet()) {
+					if(!Dcate.containsKey(s)) {
+						Dcate.put(s, 0.0);
+					}
+					if(!Dcon.containsKey(s)) {//如果某个信息源不参与提供信息，则把他的损失设置成0
+						Dcon.put(s, 0.0);
+					}
 					xRate += RealityI.get(s) * Dcate.get(s);
 					yRate += RealityJ.get(s) * Dcon.get(s);
 				}
 				tt.setXRate(xRate);
 				tt.setYRate(yRate);
+				//TODO 验证xRate,yRate的正确性
+				for(int l=0;l<tt.getXRate().size();l++) {
+					System.out.println("xRate:"+tt.getXRate().get(l)+"  "+"yRate:"+tt.getYRate().get(l));
+				}
+				/*
 				//调用梯度下降，计算合理的alpha beta
 				double[] theta = new double[2];
 				theta = batchGradientDescent();//调用梯度下降
@@ -130,6 +149,9 @@ public class FStep3 {
 					countRealityJ = sigmoid(beta,s);
 					tt.setRealityJ(s, countRealityJ);
 				}
+				*/
+				tt.clearDcate();
+				tt.clearDcon();
 			}
 		  }
 	}
@@ -225,7 +247,6 @@ public class FStep3 {
 		conf.set("fs.defaultFS", "hdfs://192.168.126.130:9000");
 		FileSystem fs = FileSystem.get(conf);
 		
-		//TODO 读出信息源的标准情况，执行十遍，！！！覆盖问题
 		Path pathSourceNumber = new Path("hdfs://192.168.126.130:9000/user/findTruth/feedback/truth1201/1/part-r-00000");
 		tt.getCorrecInfo().clear();//!!!!!统计每个月的时候，要清除
 		if (fs.exists(pathSourceNumber)) {
@@ -254,11 +275,11 @@ public class FStep3 {
 		}
 		
 		//----------------------------验证读入正确
-		Map<String,String[]> correcInfo = tt.getCorrecInfo();
-		System.out.println("验证正确信息");
-		for(String s : correcInfo.keySet()) {
-			System.out.printf("%s %s\n",s,Arrays.toString(correcInfo.get(s)));
-		}
+		//Map<String,String[]> correcInfo = tt.getCorrecInfo();
+		//System.out.println("验证正确信息");
+		//for(String s : correcInfo.keySet()) {
+			//System.out.printf("%s %s\n",s,Arrays.toString(correcInfo.get(s)));
+		//}
 		
 		Job job = new Job(FeedbackMain.config(),"Fstep3");
         String input = path.get("Step3Input");

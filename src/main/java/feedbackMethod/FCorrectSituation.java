@@ -35,28 +35,29 @@ public class FCorrectSituation {
 	
 	//文本型判断结果
 	public void setDcate(String s,Double rate){
-		if(Dcate.containsKey(s)) {
-			Dcate.put(s,Dcate.get(s)+rate);//两个文本类型的判断结果叠加
-		}else {
 			Dcate.put(s, rate);
-		}
 	}
 	
 	public Map<String,Double> getDcate(){
 		return Dcate;
 	}
 	
+	public void clearDcate(){
+		this.getDcate().clear();
+	}
+	
 	//数值型判断结果
 	public void setDcon(String s,Double rate){
-		if(Dcon.containsKey(s)) {
-			Dcon.put(s,Dcon.get(s)+rate);//两个文本类型的判断结果叠加
-		}else {
 			Dcon.put(s, rate);
-		}
 	}
 	
 	public Map<String,Double> getDcon(){
 		return Dcon;
+	}
+	
+	//新的一轮计算要清空
+	public void clearDcon(){
+		this.getDcon().clear();
 	}
 	//
 	public void setXRate(double rate){

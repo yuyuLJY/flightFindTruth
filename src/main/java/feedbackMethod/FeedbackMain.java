@@ -2,6 +2,7 @@ package feedbackMethod;
 
 import java.text.DecimalFormat;
 import java.text.Format;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,9 +20,19 @@ public class FeedbackMain {
 		path.put("Step2Input", HDFS+"/user/findTruth/data/flight_truth/2011-12-01-truth.txt");
 		path.put("Step2Output", HDFS+"/user/findTruth/feedback/truth1201/1");//输出标准的答案集
 		path.put("Step3Input", HDFS+"/user/findTruth/feedback/data1201/3");//输入标准的数据集
-		path.put("Step3Output", HDFS+"/user/findTruth/feedback/step3/2");
+		path.put("Step3Output", HDFS+"/user/findTruth/feedback/step3/9");
 		//TODO 先把正确率先写进去
-		
+		FCorrectSituation tt = new FCorrectSituation();
+		String[] sourceName = 
+			{"boston","mia","quicktrip","helloflight","flightexplorer","den","ua","iad","allegiantair",
+			"panynj","mco","weather","flightarrival","ifly","aa","ord","flightaware","myrateplan","flightview","flightstats",
+			"flightwise","flylouisville","airtravelcenter","mytripandmore","CO","usatoday","world-flight-tracker","orbitz","businesstravellogue",
+			"dfw","flytecomm","phl","wunderground","gofox","travelocity","flights","sfo","foxbusiness"};//创建数据源的名称集合
+		for(int i=0;i<sourceName.length;i++) {
+			tt.setRealityI(sourceName[i], 1.0/38);
+			tt.setRealityJ(sourceName[i], 1.0/38);
+		}
+	
 		//FStep1.run(path);//产生标准数据集
 		//FStep2.run(path);//产生标准答案集
 		FStep3.run(path);//计算迭代的正确率
