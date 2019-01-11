@@ -22,7 +22,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class FStep3 {
-	static double alpha = 0.000004985;
+	static double alpha = 0.0000002;
 	//按照航班把信息分类	
 	public static class step3Mapper extends Mapper<Object, Text, Text, Text>{
 		public void map(Object key,Text value,Context context) throws IOException, InterruptedException{
@@ -40,11 +40,12 @@ public class FStep3 {
 		  public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 			FCorrectSituation tt = new FCorrectSituation();
 			if(tt.getCorrecInfo().containsKey(key.toString())) {//答案里边有
-				 System.out.println("验证Dcon的大小："+tt.getDcon().size());
+				 //System.out.println("验证Dcon的大小："+tt.getDcon().size());
 				 String[] flightInfo = tt.getCorrecInfo().get(key.toString());//找到南航AT900的正确信息
 				 ArrayList<String []> collectInfo = new ArrayList<String[]>(); //把38个信息源给出的航班信息收集起来
 				 //------------------验证flightInfo-----------------------------
 				 System.out.printf("正确情况： %s\n",Arrays.toString(flightInfo));
+				 //TODO 设置正确读取的数量
 				 for(Text value : values) {
 					 double IsDepartureGateCorrect = 1;
 					 double IsArriveGateCorrect = 1;
@@ -86,7 +87,7 @@ public class FStep3 {
 					Distance2 +=  Math.pow(CountTime(s[3])-AveTime2,2);
 					Distance3 +=  Math.pow(CountTime(s[5])-AveTime3,2);
 					Distance4 +=  Math.pow(CountTime(s[6])-AveTime4,2);
-					System.out.println("Distance1:"+Distance1+"Distance2:"+Distance2+"Distance3:"+Distance3+"Distance4:"+Distance4);
+					//System.out.println("Distance1:"+Distance1+"Distance2:"+Distance2+"Distance3:"+Distance3+"Distance4:"+Distance4);
 				}
 				//计算分母开根号以后的值
 				absDistance1 = Math.sqrt(Distance1);
@@ -104,8 +105,8 @@ public class FStep3 {
 					if(absDistance4!=0.0)
 						countLoss4 = (Math.abs(CountTime(s[6])-CountTime(flightInfo[5])))/(absDistance4);
 					countLoss = (countLoss1+countLoss2+countLoss3+countLoss4)/4.0;//某个信息源四列的损失
-					System.out.println("name:"+s[0]+" loss1: "+countLoss1+"  loss2: "+countLoss2+" loss3: "+countLoss3
-								+"  loss4: "+countLoss4);
+					//System.out.println("name:"+s[0]+" loss1: "+countLoss1+"  loss2: "+countLoss2+" loss3: "+countLoss3
+								//+"  loss4: "+countLoss4);
 					tt.setDcon(s[0], countLoss);
 				}
 				//TODO 检查Dcon
@@ -127,6 +128,7 @@ public class FStep3 {
 					if(!Dcon.containsKey(s)) {//如果某个信息源不参与提供信息，则把他的损失设置成0
 						Dcon.put(s, 0.0);
 					}
+					System.out.println("Xreality:"+RealityI.get(s)+" Dcate: "+Dcate.get(s));
 					xRate += RealityI.get(s) * Dcate.get(s);
 					yRate += RealityJ.get(s) * Dcon.get(s);
 					
@@ -136,7 +138,8 @@ public class FStep3 {
 				//TODO 验证xRate,yRate的正确性
 				for(int l=0;l<tt.getXRate().size();l++) {
 					//if(Double.isNaN(tt.getYRate().get(l))) {
-					System.out.println("xRate:"+tt.getXRate().get(l)+"  "+"yRate:"+tt.getYRate().get(l));
+					//System.out.println("xRate:"+tt.getXRate().get(l)+"  "+"yRate:"+tt.getYRate().get(l));
+					System.out.println(tt.getXRate().get(l)+","+tt.getYRate().get(l));
 				}
 				//调用梯度下降，计算合理的alpha beta
 				double[] theta = new double[2];
@@ -145,21 +148,24 @@ public class FStep3 {
 				double alpha = theta[0]/(theta[0]+1);
 				System.out.println("原始  alpha: "+alpha+" beta: "+beta);
 				//TODO beta和alpha还需要折合
-				beta = 1.0/(1+ Math.pow(Math.E,-beta));
-				alpha = 1.0/(1+ Math.pow(Math.E,-alpha));
-				System.out.println("sigmoid  alpha: "+alpha+" beta: "+beta);
+				//beta = 1.0/(1+ Math.pow(Math.E,-beta));
+				//alpha = 1.0/(1+ Math.pow(Math.E,-alpha));
+				//System.out.println("sigmoid  alpha: "+alpha+" beta: "+beta);
 				double countRealityI;
 				double countRealityJ;
+				//更新置信度
 				for( String s :tt.getRealityI().keySet()) {
-					countRealityI = sigmoid(alpha,s);
+					countRealityI = sigmoid(alpha,s,"I");
 					tt.setRealityI(s, countRealityI);
 				}
 				for( String s :tt.getRealityJ().keySet()) {
-					countRealityJ = sigmoid(beta,s);
+					countRealityJ = sigmoid(beta,s,"J");
 					tt.setRealityJ(s, countRealityJ);
 				}
 				tt.clearDcate();
 				tt.clearDcon();
+			}else {
+				//System.out.println("没有答案：  "+key.toString());
 			}
 		  }
 	}
@@ -189,11 +195,23 @@ public class FStep3 {
 	}
 	
 	//把准确率转化成[0,1]
-	public static double sigmoid(double alpha,String s) {
+	public static double sigmoid(double alpha,String s,String i) {
 		FCorrectSituation tt = new FCorrectSituation();
 		double newReality = 0;
-		double result = (alpha+1)*tt.getRealityI().get(s);//有累加
-		newReality = 1.0/(1+ Math.pow(Math.E,-result));
+		//double result = (alpha+1)*tt.getRealityI().get(s);//有累加
+		double loss = 0;
+		if(i.equals("I")) {
+			loss =(alpha*tt.getDcate().get(s))*tt.getRealityI().get(s);//!!!!不是以上次的准确率，是以这次的实际情况
+			//System.out.println("损失："+loss);
+			//loss = 1.0/(1+ Math.pow(Math.E,-loss));
+			//System.out.println("折合损失："+loss);
+			newReality = tt.getRealityI().get(s)-loss*(1.0/100.0);
+		}else {
+			loss =alpha*tt.getDcon().get(s)*tt.getRealityJ().get(s);//损失的部分
+			//loss = 1.0/(1+ Math.pow(Math.E,-loss));
+			newReality = tt.getRealityJ().get(s)-loss*(1.0/100.0);
+		}
+		//System.out.println("新结果："+newReality);
 		return newReality;
 	}
 	
@@ -202,7 +220,7 @@ public class FStep3 {
 		double[] gradient = {0,0};
 		ArrayList<Double> hypothesis = new ArrayList<Double>();
 		ArrayList<Double> loss = new ArrayList<Double>();
-		ArrayList<Double> cost = new ArrayList<Double>();
+		//ArrayList<Double> cost = new ArrayList<Double>();
 		//ArrayList<Double> gradient = new ArrayList<Double>();
 		ArrayList<Double> xRate = new ArrayList<Double>();
 		ArrayList<Double> yRate = new ArrayList<Double>();
@@ -210,8 +228,13 @@ public class FStep3 {
 		xRate = tt.getXRate();
 		yRate = tt.getYRate();
 		double costWhole= 100000;
-		for(int iter =0;costWhole>0.01 || iter>10000; iter++) {//一直做到降低为止或者到了设定的阈值
+		System.out.println("X-number"+xRate.size());
+		for(int iter =0;iter<100; iter++) {//一直做到降低为止或者到了设定的阈值
 			//计算hypothesis
+			if(Math.abs(costWhole)<0.005) {
+				break;
+			}
+			costWhole = 0;
 			double countPerHypothesis;
 			for(double a: xRate) {
 				countPerHypothesis = a*theta[0]+theta[1];
@@ -227,7 +250,7 @@ public class FStep3 {
 			for(Double a :loss) {
 				costWhole += a;
 			}
-			System.out.println("cost:"+costWhole);
+			System.out.println("iter:"+iter+" cost:"+costWhole);
 			//计算gradient
 			double gradient0 = 0;
 			double gradient1 = 0;
@@ -240,7 +263,11 @@ public class FStep3 {
 			//计算theta
 			theta[0] = theta[0] - alpha * gradient[0];
 			theta[1] = theta[1] - alpha * gradient[1];
+			System.out.println("theta[0]:"+theta[0]+" theta[1]:"+theta[1]);
+			hypothesis.clear();
+			loss.clear();
 		}
+		System.out.println("theta[0]:"+theta[0]+" theta[1]:"+theta[1]);
 		return theta;
 	}
 	

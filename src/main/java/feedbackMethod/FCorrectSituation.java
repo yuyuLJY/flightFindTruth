@@ -16,6 +16,34 @@ public class FCorrectSituation {
 	public static Map<String,Double> Dcon = new HashMap<String,Double>();//
 	public static ArrayList<Double> xRate = new ArrayList<Double>();
 	public static ArrayList<Double> yRate = new ArrayList<Double>();
+	public static ArrayList<Double> beta = new ArrayList<Double>();
+	public static ArrayList<Double> alpha = new ArrayList<Double>();
+	public static int Iter=0;
+	
+	//计算梯度下降法迭代的次数
+	public void setIter(int iter) {
+		Iter = iter;
+	}
+	public int getIter() {
+		return Iter;
+	}
+	
+	public void setBeta(double rate) {
+		beta.add(rate);
+	}
+	
+	public double getLastBeta() {
+		return beta.get(beta.size()-1);
+	}
+	
+	public void setAlpha(double rate) {
+		alpha.add(rate);
+	}
+	
+	public double getLastAlpha() {
+		return alpha.get(alpha.size()-1);
+	}
+	
 	//设置本次的正确率存储 ：<"boston",0.2>
 	public void setRealityI(String s,double rate){
 		RealityI.put(s, rate);
