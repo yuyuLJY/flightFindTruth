@@ -57,7 +57,7 @@ public class FStep4 {
 						 if(tt.getRealityI().get(saveSplitResult[0])<0.5) {
 							 catePredictFlag1=0;
 						 }
-						 String s = String.valueOf(catePredictFlag1)+"\t"+String.valueOf(cateActualFlag1);
+						 String s = String.valueOf(catePredictFlag1)+"/t"+String.valueOf(cateActualFlag1);
 						 context.write(new Text(saveSplitResult[0]),new Text(s)); 
 					 }
 					 
@@ -68,7 +68,7 @@ public class FStep4 {
 						 if(tt.getRealityI().get(saveSplitResult[0])<0.5) {
 							 catePredictFlag2=0;
 						 }
-						 String s = String.valueOf(catePredictFlag2)+"\t"+String.valueOf(cateActualFlag2);
+						 String s = String.valueOf(catePredictFlag2)+"/t"+String.valueOf(cateActualFlag2);
 						 context.write(new Text(saveSplitResult[0]),new Text(s)); 
 					 }
 
@@ -85,7 +85,7 @@ public class FStep4 {
 							  if(tt.getRealityJ().get(saveSplitResult[0])<0.5) {
 								  conPredictFlag1=0;  
 							  }
-							  String s = String.valueOf(catePredictFlag2)+"\t"+String.valueOf(cateActualFlag2);
+							  String s = String.valueOf(catePredictFlag2)+"/t"+String.valueOf(cateActualFlag2);
 							  context.write(new Text(saveSplitResult[0]),new Text(s));   
 						 }
 					 }
@@ -102,7 +102,7 @@ public class FStep4 {
 							  if(tt.getRealityJ().get(saveSplitResult[0])<0.5) {
 								  conPredictFlag2=0;  
 							  }
-							  String s = String.valueOf(catePredictFlag2)+"\t"+String.valueOf(cateActualFlag2);
+							  String s = String.valueOf(catePredictFlag2)+"/t"+String.valueOf(cateActualFlag2);
 							  context.write(new Text(saveSplitResult[0]),new Text(s));   
 								  
 						  }
@@ -174,7 +174,7 @@ public class FStep4 {
 			}
 		}
 		else {
-			System.out.println("不存在");
+			System.out.println("Step4不存在");
 		}
 		
 		//----------------------------验证读入正确

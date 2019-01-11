@@ -19,7 +19,9 @@ public class FCorrectSituation {
 	public static ArrayList<Double> beta = new ArrayList<Double>();
 	public static ArrayList<Double> alpha = new ArrayList<Double>();
 	public static int Iter=0;
-	
+	public static double correctNumber=0;
+	public static double wrongNumber=0;
+	public static Map<String,Double> perSourceCorrectRate = new HashMap<String,Double>();//
 	//计算梯度下降法迭代的次数
 	public void setIter(int iter) {
 		Iter = iter;
@@ -28,6 +30,28 @@ public class FCorrectSituation {
 		return Iter;
 	}
 	
+	//设置本次的正确率存储 ：<"boston",0.2>
+	public void setperSourceCorrectRate(String s,double rate){
+		perSourceCorrectRate.put(s, rate);
+	}
+	public Map<String,Double> getperSourceCorrectRate(){
+		return perSourceCorrectRate;
+	}
+	
+	//在验证阶段，每个信息源正确的情况
+	public void setCorrect(double number) {
+		correctNumber = number;
+	}
+	public double getCorrect() {
+		return correctNumber;
+	}
+	
+	public void setWrong(double number) {
+		wrongNumber = number;
+	}
+	public double getWrong() {
+		return wrongNumber;
+	}
 	public void setBeta(double rate) {
 		beta.add(rate);
 	}

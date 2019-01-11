@@ -21,11 +21,12 @@ public class FeedbackMain {
 		//path.put("Step1Output", HDFS+"/user/findTruth/feedback/data1201");
 		//path.put("Step2Input", HDFS+"/user/findTruth/data/flight_truth/2011-12-01-truth.txt");
 		//path.put("Step2Output", HDFS+"/user/findTruth/feedback/truth1201");//输出标准的答案集
-		path.put("Step3Input", HDFS+"/user/findTruth/feedback/data1201");//输入标准的数据集
-		path.put("Step3Output", HDFS+"/user/findTruth/feedback/step3/54");
-		path.put("Step4Input", HDFS+"/user/findTruth/feedback/data/TestData1211");
-		path.put("Step4Output", HDFS+"/user/findTruth/feedback/Step4/4");
-		
+		path.put("Step3Input", HDFS+"/user/findTruth/feedback/data1201");//计算出源的正确率
+		path.put("Step3Output", HDFS+"/user/findTruth/feedback/step3/56");
+		path.put("Step4Input", HDFS+"/user/findTruth/feedback/data/TestData1211");//读入测试集的标准data
+		path.put("Step4Output", HDFS+"/user/findTruth/feedback/Step4/6");//把统计结果写出来
+		path.put("Step5Input", HDFS+"/user/findTruth/feedback/Step4/6");
+		path.put("Step5Output", HDFS+"/user/findTruth/feedback/Step5/6");
 		//TODO 先把正确率先写进去
 		FCorrectSituation tt = new FCorrectSituation();
 		String[] sourceName = 
@@ -42,12 +43,21 @@ public class FeedbackMain {
 		//FStep2.run(path);//产生标准答案集
 		FStep3.run(path);//计算迭代的正确率
 		FStep4.run(path);
+		FStep5.run(path);
+		
 		//FindNumberOfIter.run(path);
 		//System.out.println("迭代次数： "+tt.getIter());
-		//验证准去率
+		/*
+		//验证准确率
 		for(String s: tt.getRealityI().keySet()) {
 			System.out.println("name:"+s+" "+tt.getRealityI().get(s)+" "+tt.getRealityJ().get(s));
+		}*/
+		
+		//验证测试集准确率
+		for(String s: tt.getperSourceCorrectRate().keySet()) {
+			System.out.println("测试集准确率name:"+s+" "+tt.getperSourceCorrectRate().get(s));
 		}
+		
 		System.out.println("main");
 		System.exit(0);
 	}
