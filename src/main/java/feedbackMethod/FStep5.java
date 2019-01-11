@@ -23,7 +23,7 @@ public class FStep5 {
 		public void map(Object key,Text value,Context context) throws IOException, InterruptedException{
 			System.out.println(value.toString());
 			String[] splitResult = value.toString().split("\t");//tap符号
-			//System.out.printf("map %s\n",Arrays.toString(splitResult));
+			System.out.printf("result: %s\n",Arrays.toString(splitResult));
 			//System.out.printf("map %s\n",Arrays.toString(splitInformation));
 			context.write(new Text(splitResult[0]), new Text(splitResult[1]));//<"Nanhang",整条信息>
 		}
@@ -35,12 +35,14 @@ public class FStep5 {
 			  FCorrectSituation tt = new FCorrectSituation(); 
 			  for(Text value : values) {
 					 String[] splitResult = value.toString().split("/t");//tap符号
-					 if(splitResult.equals(splitResult[0])) {//正确的情况
+					 System.out.printf(Arrays.toString(splitResult));
+					 if(splitResult[1].equals(splitResult[0])) {//正确的情况
 						 tt.setCorrect(tt.getCorrect()+1.0);
 					 }else {
 						 tt.setWrong(tt.getWrong()+1.0);
 					 }
 			  }//一个信息源处理完毕
+			  System.out.printf("correct:"+tt.getCorrect()+" rate:tt.getCorrect())/(tt.getCorrect()+tt.getWrong())");
 			  tt.setperSourceCorrectRate(key.toString(), (tt.getCorrect())/(tt.getCorrect()+tt.getWrong()));
 			  //把信息清空
 			  tt.setCorrect(0);
